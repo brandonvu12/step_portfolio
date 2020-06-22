@@ -18,10 +18,9 @@
 function addMeme() {
   const imagesArray = 
   ['images/youtube_rewind.png','images/chrome_ram.gif', 'images/coffee.png','images/sundar.png'];
-  var i;
   const img = document.getElementById('meme-container');
   //checks for current image to change to the next one
-    for (i=0; i<imagesArray.length; i++)
+    for (var i=0; i<imagesArray.length; i++)
     {
         if(img.src.match(imagesArray[i]))
         {
