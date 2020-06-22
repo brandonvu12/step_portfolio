@@ -16,13 +16,40 @@
  * Adds a random greeting to the page.
  */
 function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+  //const greetings =
+  //    ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
 
+  const imagesArray = 
+  ['images/youtube_rewind.png','images/chrome_ram.gif', 'images/coffee.png','images/sundar.png'];
   // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  var i;
+  const img = document.getElementById('greeting-container');
+  for (i=0; i<imagesArray.length; i++)
+  {
+      if(img.src.match(imagesArray[i]))
+      {
+          if (i == (imagesArray.length)-1)
+          {
+            img.src = imagesArray[0];
+          }
+          else
+          {
+          
+          img.src = imagesArray[i+1];
+          
+          }
+          break;
+      }
+      else if (img.src == '')
+      {
+          img.src= imagesArray[0];
+      }
+  }
+  
+  //const greeting = imagesArray[Math.floor(Math.random() * imagesArray.length)];
 
   // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  //const greetingContainer = document.getElementById('greeting-container');
+  //greetingContainer.innerText = greeting;
+  //greetingContainer.src = greeting;
 }
