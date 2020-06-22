@@ -12,5 +12,4 @@ To get started:
 
 Then follow the on-screen instructions to set up your repo.
 
-
 This is my first edit.
