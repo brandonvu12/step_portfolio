@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Functions for all the buttons
- */
+//Iterating through memes
 function addMeme()
 {
   const imagesArray = 
@@ -42,23 +40,18 @@ function addMeme()
     }
 }
 
+//Parsing JSON comments
 function getComments()
 {
-    fetch('/data').then(response => response.json()).then((commentObj) =>
-    {
-        const listElement = document.getElementById('comments-container');
-        listElement.innerHTML = '';
-        listElement.appendChild(
-            createListElement('Position: ' + commentObj.Position));
-        listElement.appendChild(
-            createListElement('Team: ' + commentObj.Team));
-        listElement.appendChild(
-            createListElement('Year: ' + commentObj.Year));
+    fetch('/data').then(response => response.json()).then((commentObj) => {
+    const allComments = document.getElementById('allComments');
+    commentObj.comments.forEach((line) => {
+        allComments.appendChild(createListElement(line));
+        });
     });
-    toggleButton();
 }
 
-/** Creates an <ul> element containing text. */
+// Creates an <ul> element containing text
 function createListElement(text)
 {
     const ulElement = document.createElement('ul');
@@ -66,15 +59,4 @@ function createListElement(text)
     return ulElement;
 }
 
-function toggleButton()
-{
-    var current = document.getElementById("comments-container");
-    if (current.style.display === "block")
-    {
-        current.style.display = "none";
-    } 
-    else
-    {
-        current.style.display = "block";
-    }
-}
+
