@@ -1,28 +1,35 @@
 <!DOCTYPE html>
 <html>
-  <head>
+    <head>
     <meta charset="UTF-8">
     <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-  </head>
-  <body>
-    <div id="content">
-      <h1>Brandon Vu's Portfolio</h1>
-      <p>I am a first year at UC Irvine majoring in Computer Science.
+    </head>
+    <body>
+        <div id="content">
+        <h1>Brandon Vu's Portfolio</h1>
+        <p>I am a first year at UC Irvine majoring in Computer Science.
         In my free time I like to hike, drink water and play with this japanese toy called the kendama.<p/>
         <img src="images/kendama.jpg" id = "kendamaImage" >
-      <p> 
+        <p> 
         Working from home is a new 
         experience, but the day I got access to Memegen, I have never been the same.
         Looking forward to learning a lot this summer!<p/>
-      <h3>Click here to cycle through my favorite memes</h3>
-      <button onclick="addMeme()">You won't be disappointed</button>
-      <p><p/>
-       <img id="meme-container">
-       <p><p/>
-       <button onclick="getComments()">Who Am I</button>
-       <div id="comments-container"></div>
-    </div>
-  </body>
+        <h3>Click here to cycle through my favorite memes</h3>
+        <button onclick="addMeme()">You won't be disappointed</button>
+        <p><p/>
+        <img id="meme-container">
+        <p><p/>
+        <body onload="getComments()">
+        <form action="/data" method="POST">
+        <p>Leave a Comment Below:</p>
+        <input type="text" name="comment">
+        <br/><br/>
+        <input type="submit" />
+        </form>
+        <ul id = "allComments"></ul>
+        </body>
+        </div>
+    </body>
 </html>
