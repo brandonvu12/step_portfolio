@@ -15,6 +15,7 @@
 package com.google.sps.servlets;
 
 import com.google.gson.Gson;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
@@ -25,7 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    private String convertToJson(HashMap<String, String> commentsHash) {
+    HashMap<String,ArrayList<String>> commentsHash = new HashMap<String,ArrayList<String>>();
+    ArrayList<String> comments = new ArrayList<String>();
+
+    private String convertToJson(ArrayList<String> commentsHash) {
         Gson gson = new Gson();
         String json = gson.toJson(commentsHash);
         return json;
@@ -34,12 +38,27 @@ public class DataServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        HashMap<String, String> comments = new HashMap<String, String>(); 
-        comments.put("Year", "Summer 2020");
-        comments.put("Position", "STEP Intern");
-        comments.put("Team", "Croupier");
         response.setContentType("application/json;");
-        String json = convertToJson(comments);
+        String json = new Gson().toJson(commentsHash);
         response.getWriter().println(json);
     }
+
+    //adding to hashmap with arraylist as value
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
+        String text = getParameter(request, "comment", "");
+        comments.add(text);
+        commentsHash.put("comments",comments);
+        response.setContentType("text/html;");
+        response.getWriter().println(commentsHash);
+        response.sendRedirect("/");
+    }
+    //reading text input from HTML
+    private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value;
+  }
 }
