@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import com.google.gson.Gson;
+import java.util.HashMap;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,10 +25,22 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+    
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println("Hello Brandon Vu!");
-  }
+    private String convertToJson(HashMap<String, String> commentsHash) {
+        Gson gson = new Gson();
+        String json = gson.toJson(commentsHash);
+        return json;
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HashMap<String, String> comments = new HashMap<String, String>(); 
+        comments.put("Year", "Summer 2020");
+        comments.put("Position", "STEP Intern");
+        comments.put("Team", "Croupier");
+        response.setContentType("application/json;");
+        String json = convertToJson(comments);
+        response.getWriter().println(json);
+    }
 }
