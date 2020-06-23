@@ -40,3 +40,9 @@ function addMeme() {
         }
     }
 }
+
+async function getComment() {
+  const response = await fetch('/data');
+  const quote = await response.text();
+  document.getElementById('comment-container').innerText = quote;
+}
