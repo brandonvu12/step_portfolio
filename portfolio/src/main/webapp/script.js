@@ -13,9 +13,10 @@
 // limitations under the License.
 
 /**
- * Adds the next meme in the array to the page.
+ * Functions for all the buttons
  */
-function addMeme() {
+function addMeme()
+{
   const imagesArray = 
   ['images/youtube_rewind.png','images/chrome_ram.gif', 'images/coffee.png','images/sundar.png'];
   const img = document.getElementById('meme-container');
@@ -41,8 +42,39 @@ function addMeme() {
     }
 }
 
-async function getComment() {
-  const response = await fetch('/data');
-  const quote = await response.text();
-  document.getElementById('comment-container').innerText = quote;
+function getComments()
+{
+    fetch('/data').then(response => response.json()).then((commentObj) =>
+    {
+        const listElement = document.getElementById('comments-container');
+        listElement.innerHTML = '';
+        listElement.appendChild(
+            createListElement('Position: ' + commentObj.Position));
+        listElement.appendChild(
+            createListElement('Team: ' + commentObj.Team));
+        listElement.appendChild(
+            createListElement('Year: ' + commentObj.Year));
+    });
+    toggleButton();
+}
+
+/** Creates an <ul> element containing text. */
+function createListElement(text)
+{
+    const ulElement = document.createElement('ul');
+    ulElement.innerText = text;
+    return ulElement;
+}
+
+function toggleButton()
+{
+    var current = document.getElementById("comments-container");
+    if (current.style.display === "block")
+    {
+        current.style.display = "none";
+    } 
+    else
+    {
+        current.style.display = "block";
+    }
 }
