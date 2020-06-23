@@ -25,8 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    
-
     private String convertToJson(HashMap<String, String> commentsHash) {
         Gson gson = new Gson();
         String json = gson.toJson(commentsHash);
@@ -34,7 +32,8 @@ public class DataServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {
         HashMap<String, String> comments = new HashMap<String, String>(); 
         comments.put("Year", "Summer 2020");
         comments.put("Position", "STEP Intern");
