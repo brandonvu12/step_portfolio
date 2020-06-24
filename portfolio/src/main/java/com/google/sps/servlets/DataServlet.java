@@ -32,14 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
-    private String convertToJson(ArrayList<String> commentsHash)
-    {
-        Gson gson = new Gson();
-        String json = gson.toJson(commentsHash);
-        return json;
-    }
-
     private void addEntity(String text, long timestamp)
     {
         Entity commentEntity = new Entity("Comments");
@@ -82,7 +74,7 @@ public class DataServlet extends HttpServlet {
         addEntity(text, timestamp);
         response.sendRedirect("/");
     }
-    
+
     //reading text input from HTML
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
