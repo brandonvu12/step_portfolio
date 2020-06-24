@@ -32,8 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    HashMap<String,ArrayList<String>> commentsHash = new HashMap<String,ArrayList<String>>();
-    ArrayList<String> comments = new ArrayList<String>();
 
     private String convertToJson(ArrayList<String> commentsHash)
     {
@@ -76,18 +74,15 @@ public class DataServlet extends HttpServlet {
         response.getWriter().println(json);
     }
 
-    //adding to hashmap with arraylist as value
+    //push values to datastore
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String text = getParameter(request, "comment", "");
         long timestamp = System.currentTimeMillis();
-        comments.add(text);
-        commentsHash.put("comments",comments);
-        response.setContentType("text/html;");
-        response.getWriter().println(commentsHash);
         addEntity(text, timestamp);
         response.sendRedirect("/");
     }
+    
     //reading text input from HTML
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
