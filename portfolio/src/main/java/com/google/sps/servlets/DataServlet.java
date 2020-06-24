@@ -17,6 +17,9 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,19 +42,37 @@ public class DataServlet extends HttpServlet {
         return json;
     }
 
-    private void addEntity(String text)
+    private void addEntity(String text, long timestamp)
     {
         Entity commentEntity = new Entity("Comments");
         commentEntity.setProperty("commentInput", text);
+        commentEntity.setProperty("timestamp", timestamp);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         datastore.put(commentEntity);
+    }
+
+    private HashMap<String,ArrayList<String>> hashComment(PreparedQuery results)
+    {
+        HashMap<String,ArrayList<String>> entityHash = new HashMap<String,ArrayList<String>>();
+        ArrayList<String> cArray = new ArrayList<String>();
+        for (Entity entity : results.asIterable()) 
+        {
+            String eachComment = (String) entity.getProperty("commentInput");
+            cArray.add(eachComment);
+            entityHash.put("comments",cArray);
+        }
+        return entityHash;
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        response.setContentType("application/json;");
-        String json = new Gson().toJson(commentsHash);
+        Query query = new Query("Comments").addSort("timestamp", SortDirection.DESCENDING);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        PreparedQuery results = datastore.prepare(query);
+        HashMap<String,ArrayList<String>> entityHash = hashComment(results);
+        response.setContentType("application/json");
+        String json = new Gson().toJson(entityHash);
         response.getWriter().println(json);
     }
 
@@ -59,11 +80,12 @@ public class DataServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String text = getParameter(request, "comment", "");
+        long timestamp = System.currentTimeMillis();
         comments.add(text);
         commentsHash.put("comments",comments);
         response.setContentType("text/html;");
         response.getWriter().println(commentsHash);
-        addEntity(text);
+        addEntity(text, timestamp);
         response.sendRedirect("/");
     }
     //reading text input from HTML
