@@ -14,6 +14,9 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,10 +32,19 @@ public class DataServlet extends HttpServlet {
     HashMap<String,ArrayList<String>> commentsHash = new HashMap<String,ArrayList<String>>();
     ArrayList<String> comments = new ArrayList<String>();
 
-    private String convertToJson(ArrayList<String> commentsHash) {
+    private String convertToJson(ArrayList<String> commentsHash)
+    {
         Gson gson = new Gson();
         String json = gson.toJson(commentsHash);
         return json;
+    }
+
+    private void addEntity(String text)
+    {
+        Entity commentEntity = new Entity("Comments");
+        commentEntity.setProperty("commentInput", text);
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        datastore.put(commentEntity);
     }
 
     @Override
@@ -51,6 +63,7 @@ public class DataServlet extends HttpServlet {
         commentsHash.put("comments",comments);
         response.setContentType("text/html;");
         response.getWriter().println(commentsHash);
+        addEntity(text);
         response.sendRedirect("/");
     }
     //reading text input from HTML
