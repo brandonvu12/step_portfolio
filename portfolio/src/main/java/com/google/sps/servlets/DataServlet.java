@@ -41,15 +41,24 @@ public class DataServlet extends HttpServlet {
         datastore.put(commentEntity);
     }
 
-    private HashMap<String,ArrayList<String>> hashComment(PreparedQuery results)
+    private HashMap<String,ArrayList<String>> hashComment(PreparedQuery results, int nComments)
     {
-        HashMap<String,ArrayList<String>> entityHash = new HashMap<String,ArrayList<String>>();
-        ArrayList<String> cArray = new ArrayList<String>();
+        HashMap<String,ArrayList<String>> entityHash = new HashMap<>();
+        ArrayList<String> cArray = new ArrayList<>();
+        int count = 0;
         for (Entity entity : results.asIterable()) 
         {
+            if (nComments != count)
+            {
             String eachComment = (String) entity.getProperty("commentInput");
             cArray.add(eachComment);
             entityHash.put("comments",cArray);
+            count++;
+            }
+            else
+            {
+                break;
+            }
         }
         return entityHash;
     }
@@ -60,10 +69,12 @@ public class DataServlet extends HttpServlet {
         Query query = new Query("Comments").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-        HashMap<String,ArrayList<String>> entityHash = hashComment(results);
+        int num = Integer.parseInt(request.getParameter("nComment"));
+        HashMap<String,ArrayList<String>> entityHash = hashComment(results,num);
         response.setContentType("application/json");
         String json = new Gson().toJson(entityHash);
         response.getWriter().println(json);
+
     }
 
     //push values to datastore
