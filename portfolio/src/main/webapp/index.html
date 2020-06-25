@@ -3,8 +3,9 @@
     <head>
     <meta charset="UTF-8">
     <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaZ-IjxHeJH_It6t3CX_CbWjIYZZ7d31k"></script>
     <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div id="content">
@@ -20,21 +21,24 @@
         <button onclick="addMeme()">You won't be disappointed</button>
         <p><p/>
         <img id="meme-container">
-        <p><p/>
-        <body onload="getComments()">
-        <form action="/data" method="POST">
-        <p>Leave a Comment Below:</p>
-        <input type="text" name="comment">
-       <br/><br/>
-        <input type="submit"/>
-        </form>
-        <br/><br/>
-        <input type="number" id = "nComment" value="3" name="nComment" onchange="getComments()">
-        <ul id = "allComments"></ul>
-        <form action= "/data" method="POST">
-        <button onclick="deleteAll()">Delete All Comments</button> 
-        </form>
+        </br><br/>
+        <body onload="bothFunc()">
+            <body onload="createMap();">
+            <h3>Where Am I From?</h3>
+            <div id="map"></div>
         </body>
-        </div>
+            <form action="/data" method="POST">
+            <h3>Leave a Comment Below:</h3>
+            <input type="text" name="comment">
+            <input type="submit"/>
+            </form>
+            <p>Number of Comments Displayed<p/>
+            <input type="number" id = "nComment" value="3" name="nComment" onchange="getComments()">
+            <ul id = "allComments"></ul>
+            <form action= "/data" method="POST">
+            <button onclick="deleteAll()">Delete All Comments</button> 
+            </br><br/>
+            </form>
+        </body>
     </body>
-</html>
+ </html>
