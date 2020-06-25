@@ -43,8 +43,15 @@ function addMeme()
 //Parsing JSON comments
 function getComments()
 {
-    fetch('/data').then(response => response.json()).then((commentObj) => {
-    const allComments = document.getElementById('allComments');
+    var bruh = document.getElementById('nComment').value;
+    var ending = "/data?nComment=" + bruh;
+    console.log(ending);
+    fetch(ending).then(response => response.json()).then((commentObj) => {
+    var allComments = document.getElementById('allComments');
+    while (allComments.hasChildNodes())
+    {  
+        allComments.removeChild(allComments.firstChild);
+    }   
     commentObj.comments.forEach((line) => {
         allComments.appendChild(createListElement(line));
         });
@@ -54,9 +61,17 @@ function getComments()
 // Creates an <ul> element containing text
 function createListElement(text)
 {
+
     const ulElement = document.createElement('ul');
-    ulElement.innerText = text;
+    if (text != "")
+    {
+        ulElement.innerText = text;
+    }
     return ulElement;
 }
 
+function deleteAll()
+{
+    fetch('/delete-data', {method: 'POST'}).then(getComments());
+}
 
