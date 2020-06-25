@@ -25,10 +25,15 @@
         <form action="/data" method="POST">
         <p>Leave a Comment Below:</p>
         <input type="text" name="comment">
-        <br/><br/>
-        <input type="submit" />
+       <br/><br/>
+        <input type="submit"/>
         </form>
+        <br/><br/>
+        <input type="number" id = "nComment" value="3" name="nComment" onchange="getComments()">
         <ul id = "allComments"></ul>
+        <form action= "/data" method="POST">
+        <button onclick="deleteAll()">Delete All Comments</button> 
+        </form>
         </body>
         </div>
     </body>
