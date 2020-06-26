@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//Iterating through memes
+/** Iterating through memes to display */
 function addMeme()
 {
   const imagesArray = 
@@ -40,7 +40,7 @@ function addMeme()
     }
 }
 
-/**Create Map  with styling and location */
+/**Create Map with styling and location */
 function createMap() {
 var location = {lat: 33.870350, lng: -117.924301};
   const map = new google.maps.Map(
@@ -129,6 +129,7 @@ var location = {lat: 33.870350, lng: -117.924301};
       });
       var marker = new google.maps.Marker({position: location, map: map});
 }
+
 /** Call both functions when the website first loads */
 function bothFunc()
 {
@@ -139,21 +140,32 @@ function bothFunc()
 /**Parsing JSON comments*/
 function getComments()
 {
-    var bruh = document.getElementById('nComment').value;
-    var ending = "/data?nComment=" + bruh;
+    var numComments = document.getElementById('inputNumComments').value;
+    var ending = `/data?inputNumComments=${ numComments }`;
     fetch(ending).then(response => response.json()).then((commentObj) => {
     var allComments = document.getElementById('allComments');
-    while (allComments.hasChildNodes())
-    {  
-        allComments.removeChild(allComments.firstChild);
-    }   
-    commentObj.comments.forEach((line) => {
-        allComments.appendChild(createListElement(line));
-        });
+    //removes all the current comments displayed and refresh with new ones
+    removeAllComments(allComments);
+    addAllComments(commentObj);
     });
 }
 
-// Creates an <ul> element containing text
+function addAllComments(commentObj)
+{
+    commentObj.comments.forEach((line) => {
+        allComments.appendChild(createListElement(line));
+        });
+}
+
+function removeAllComments(allComments)
+{
+    while (allComments.hasChildNodes())
+    {  
+        allComments.removeChild(allComments.firstChild);
+    }
+}
+
+/** Creates an <ul> element containing text */
 function createListElement(text)
 {
 
