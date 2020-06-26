@@ -41,25 +41,26 @@ public class DataServlet extends HttpServlet {
         datastore.put(commentEntity);
     }
 
-    private HashMap<String,ArrayList<String>> hashComment(PreparedQuery results, int nComments)
+    /** Iterates through all comments in datastore to append only "numComments" amount of elements*/
+    private HashMap<String,ArrayList<String>> hashComment(PreparedQuery results, int numComments)
     {
         HashMap<String,ArrayList<String>> entityHash = new HashMap<>();
         ArrayList<String> cArray = new ArrayList<>();
         int count = 0;
         for (Entity entity : results.asIterable()) 
         {
-            if (nComments != count)
-            {
-            String eachComment = (String) entity.getProperty("commentInput");
-            cArray.add(eachComment);
-            entityHash.put("comments",cArray);
-            count++;
-            }
-            else
+            if (numComments == count)
             {
                 break;
             }
+            else
+            {
+                String eachComment = (String) entity.getProperty("commentInput");
+                cArray.add(eachComment);
+                count++;
+            }
         }
+        entityHash.put("comments",cArray);
         return entityHash;
     }
 
@@ -69,15 +70,16 @@ public class DataServlet extends HttpServlet {
         Query query = new Query("Comments").addSort("timestamp", SortDirection.DESCENDING);
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-        int num = Integer.parseInt(request.getParameter("nComment"));
-        HashMap<String,ArrayList<String>> entityHash = hashComment(results,num);
+        //"inputNumComments" will always be a numerical value due to restrictions on HTML
+        int numComments = Integer.parseInt(request.getParameter("inputNumComments"));
+        HashMap<String,ArrayList<String>> entityHash = hashComment(results,numComments);
         response.setContentType("application/json");
         String json = new Gson().toJson(entityHash);
         response.getWriter().println(json);
 
     }
 
-    //push values to datastore
+    /** Stores the user's comment in datastore */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String text = getParameter(request, "comment", "");
@@ -86,7 +88,7 @@ public class DataServlet extends HttpServlet {
         response.sendRedirect("/");
     }
 
-    //reading text input from HTML
+    /* *Get value from html */
     private String getParameter(HttpServletRequest request, String name, String defaultValue) {
     String value = request.getParameter(name);
     if (value == null) {
