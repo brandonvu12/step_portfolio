@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**    EDIT THE COMMENTS*/
+/** Delete entire entity that contains all comments */
 @WebServlet("/delete-data")
 public class DeleteDataServlet extends HttpServlet {
     @Override
@@ -40,7 +40,7 @@ public class DeleteDataServlet extends HttpServlet {
         Query query = new Query("Comments");
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         PreparedQuery results = datastore.prepare(query);
-         for (Entity entity : results.asIterable()) 
+        for (Entity entity : results.asIterable()) 
         {
             datastore.delete(entity.getKey());
         }
