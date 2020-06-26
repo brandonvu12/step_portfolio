@@ -64,6 +64,7 @@ public class DataServlet extends HttpServlet {
         return entityHash;
     }
 
+    /** Get entity from datastore in a specific order and quantity to convert to json. */
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
@@ -79,7 +80,7 @@ public class DataServlet extends HttpServlet {
 
     }
 
-    /** Stores the user's comment in datastore */
+    /** Stores the user's comment in datastore with the current time. */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
         String text = getParameter(request, "comment", "");
