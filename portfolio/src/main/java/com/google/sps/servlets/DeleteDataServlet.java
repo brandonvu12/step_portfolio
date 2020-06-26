@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Delete entire entity that contains all comments */
 @WebServlet("/delete-data")
 public class DeleteDataServlet extends HttpServlet {
+
+    /** Iterate through database and delete entity(all the comments)*/
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
