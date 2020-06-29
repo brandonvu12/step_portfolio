@@ -59,14 +59,12 @@ public class DataServlet extends HttpServlet {
             {
                 break;
             }
-            else
-            {
-                String email = (String) entity.getProperty("email");
-                String eachComment = (String) entity.getProperty("commentInput");
-                String combine = email + ": " + eachComment;
-                cArray.add(combine);
-                count++;
-            }
+            String email = (String) entity.getProperty("email");
+            String eachComment = (String) entity.getProperty("commentInput");
+            String combine = String.format("%1$s: %2$s", email, eachComment);
+            //String combine = email + ": " + eachComment;
+            cArray.add(combine);
+            count++;
         }
         entityHash.put("comments",cArray);
         return entityHash;
