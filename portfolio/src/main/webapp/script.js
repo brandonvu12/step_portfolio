@@ -135,6 +135,7 @@ function bothFunc()
 {
     createMap();
     getComments();
+    checkLogin();
 }
 
 /**Parsing JSON comments*/
@@ -148,6 +149,47 @@ function getComments()
     removeAllComments(allComments);
     addAllComments(commentObj);
     });
+}
+
+/** Check the login status to display the comments or force sign in */
+function checkLogin()
+{
+    var commentForm = document.getElementById('commentForm');
+    fetch('/home').then(response => response.json()).then((login) => {
+    if (login.loginStatus == 'true')
+    {
+        logButton(login.url, "Logout", 'logoutButton');
+        document.getElementById("loginButton").remove();
+    }
+    else (login.loginStatus == 'false')
+    {
+        hideComments();
+        logButton(login.url, "Login", 'loginButton');
+    }
+});
+}
+
+/** Create login/logout button depending on parameters */
+function logButton(urlText, name, id)
+{
+   var btn = document.createElement("BUTTON");
+    btn.innerHTML = name;
+    document.getElementById("content").appendChild(btn);  
+    btn.setAttribute('id', id);
+    var log = document.getElementById(id);
+    document.getElementById(id).onclick = function () {
+    location.href = urlText; 
+    };
+}
+
+/** Hide comment form and display message  */
+function hideComments()
+{
+    var allComments = document.getElementById('commentForm');
+    allComments.style.display = "none";
+    var message = document.createElement("H3");
+    message.innerText = "Sign In To See Comments";
+    document.getElementById("content").appendChild(message);
 }
 
 function addAllComments(commentObj)
@@ -168,7 +210,6 @@ function removeAllComments(allComments)
 /** Creates an <ul> element containing text */
 function createListElement(text)
 {
-
     const ulElement = document.createElement('ul');
     if (text != "")
     {
