@@ -8,39 +8,42 @@
     <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <div id="content">
-        <h1>Brandon Vu's Portfolio</h1>
-        <p>I am a first year at UC Irvine majoring in Computer Science.
-        In my free time I like to hike, drink water and play with this japanese toy called the kendama.<p/>
-        <img src="images/kendama.jpg" id = "kendamaImage" >
-        <p> 
+    <div id="content">
+    <h1>Brandon Vu's Portfolio</h1>
+    <p>
+        I am a first year at UC Irvine majoring in Computer Science.
+        In my free time I like to hike, drink water and play with this japanese toy called the kendama.
+    <p/>
+    <img src="images/kendama.jpg" id = "kendamaImage" >
+    <p> 
         Working from home is a new 
         experience, but the day I got access to Memegen, I have never been the same.
-        Looking forward to learning a lot this summer!<p/>
-        <h3>Click here to cycle through my favorite memes</h3>
-        <button onclick="addMeme()">You won't be disappointed</button>
-        <p><p/>
-        <img id="meme-container">
-        </br><br/>
-        <body onload="bothFunc()">
-            <body onload="createMap();">
-            <h3>Where Am I From?</h3>
-            <div id="map"></div>
-        </body>
-        <div id ="commentForm">
-            <form action="/data" method="POST">
-            <h3>Leave a Comment Below:</h3>
-            <input type="text" name="comment">
-            <input type="submit"/>
-            </form>
-            <p>Number of Comments Displayed<p/>
-            <input type="number" id = "inputNumComments" value="3" name="inputNumComments" onchange="getComments()">
-            <ul id = "allComments"></ul>
-            <form action= "/data" method="POST">
-            <button onclick="deleteAll()">Delete All Comments</button> 
-            </br><br/>
-            </form>
-        </div>
-        </body>
+        Looking forward to learning a lot this summer!
+    <p/>
+    <h3>Click here to cycle through my favorite memes</h3>
+    <button onclick="addMeme()">You won't be disappointed</button>
+    <p><p/>
+    <img id="meme-container">
+    </br><br/>
+    <body onload="bothFunc()">
+    <body onload="createMap();">
+    <h3>Where Am I From?</h3>
+    <div id="map"></div>
+    </body>
+    <div id ="commentForm">
+    <form action="/data" method="POST">
+    <h3>Leave a Comment Below:</h3>
+    <input type="text" name="comment">
+    <input type="submit"/>
+    </form>
+    <p>Number of Comments Displayed<p/>
+    <input type="number" id = "inputNumComments" value="3" name="inputNumComments" onchange="getComments()">
+    <ul id = "allComments"></ul>
+    <form action= "/data" method="POST">
+    <button onclick="deleteAll()">Delete All Comments</button> 
+    </br><br/>
+    </form>
+    </div>
+    </body>
     </body>
  </html>
