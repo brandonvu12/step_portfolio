@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,13 +34,17 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-    private void addEntity(String text, long timestamp)
+    private void addEntity(String text, long timestamp, String email)
     {
         Entity commentEntity = new Entity("Comments");
-        commentEntity.setProperty("commentInput", text);
-        commentEntity.setProperty("timestamp", timestamp);
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        datastore.put(commentEntity);
+        if (text != "")
+        {
+            commentEntity.setProperty("commentInput", text);
+            commentEntity.setProperty("timestamp", timestamp);
+            commentEntity.setProperty("email", email);
+            DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+            datastore.put(commentEntity);
+        }
     }
 
     /** Iterates through all comments in datastore to append only "numComments" amount of elements*/
@@ -55,8 +61,10 @@ public class DataServlet extends HttpServlet {
             }
             else
             {
+                String email = (String) entity.getProperty("email");
                 String eachComment = (String) entity.getProperty("commentInput");
-                cArray.add(eachComment);
+                String combine = email + ": " + eachComment;
+                cArray.add(combine);
                 count++;
             }
         }
@@ -83,9 +91,11 @@ public class DataServlet extends HttpServlet {
     /** Stores the user's comment in datastore with the current time. */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
+        UserService userService = UserServiceFactory.getUserService();
+        String email = userService.getCurrentUser().getEmail();
         String text = getParameter(request, "comment", "");
         long timestamp = System.currentTimeMillis();
-        addEntity(text, timestamp);
+        addEntity(text, timestamp, email);
         response.sendRedirect("/");
     }
 
