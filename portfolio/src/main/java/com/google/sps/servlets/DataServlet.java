@@ -62,7 +62,6 @@ public class DataServlet extends HttpServlet {
             String email = (String) entity.getProperty("email");
             String eachComment = (String) entity.getProperty("commentInput");
             String combine = String.format("%1$s: %2$s", email, eachComment);
-            //String combine = email + ": " + eachComment;
             cArray.add(combine);
             count++;
         }
