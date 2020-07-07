@@ -24,8 +24,7 @@ import java.util.Set;
 /** Class that calculates open slot times given Event/Meeting Requests */
 public final class FindMeetingQuery
 {
-    /** This method requires a collection of Event objects and a MeetingRequest Object. 
-        Returns a collection of TimeRange objects that are potential times for meetings*/
+    /** Reads a collection of events and people to find potential times for all of them to meet*/
     public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request)
     {
         long meetingDuration = request.getDuration();
@@ -39,54 +38,51 @@ public final class FindMeetingQuery
         {
             return Arrays.asList(TimeRange.WHOLE_DAY);
         }
-        else
+        for(Event event : events)
         {
-            for(Event event : events)
+            TimeRange whenEvent = event.getWhen();
+            Set<String> eventAttendees = event.getAttendees();
+            //Check if event attendees are invited to meeting OR there are no mandotory attendees/only optionals
+            if (checkAttendees(eventAttendees,request.getAttendees())||
+                (request.getAttendees().isEmpty() && !request.getOptionalAttendees().isEmpty()))
             {
-                TimeRange whenEvent = event.getWhen();
-                Set<String> eventAttendees = event.getAttendees();
-                //Check if event attendees are invited to meeting OR there are no mandotory attendees/only optionals
-                if (checkAttendees(eventAttendees,request.getAttendees())||
-                    (request.getAttendees().isEmpty() && !request.getOptionalAttendees().isEmpty()))
+                if (availableTime.isEmpty())
                 {
-                    if (availableTime.isEmpty())
-                    {
-                        addFirstOpenTimes(meetingDuration,availableTime,whenEvent);
-                    }
-                    else
-                    {
-                        checkOverlapsInPotentialTimesWithEventTimes(availableTime, whenEvent, meetingDuration);   
-                    }
-                }  
-                else if (request.getOptionalAttendees().isEmpty())
-                {
-                    return Arrays.asList(TimeRange.WHOLE_DAY);
-                } 
-                //Checks if optional attendees can attend open times, but will not affect times made for mandatory attendees
-                if (checkAttendees(eventAttendees, request.getOptionalAttendees()) && !request.getAttendees().isEmpty())
-                {
-                    return checkIfOptionalAttendeesCanAttend(availableTime,whenEvent);
+                    addFirstOpenTimes(meetingDuration,availableTime,whenEvent);
                 }
+                else
+                {
+                    checkOverlapsInPotentialTimesWithEventTimes(availableTime, whenEvent, meetingDuration);   
+                }
+            }  
+            else if (request.getOptionalAttendees().isEmpty())
+            {
+                return Arrays.asList(TimeRange.WHOLE_DAY);
+            } 
+            //Checks if optional attendees can attend open times, but will not affect times made for mandatory attendees
+            if (checkAttendees(eventAttendees, request.getOptionalAttendees()) && !request.getAttendees().isEmpty())
+            {
+                return checkIfOptionalAttendeesCanAttend(availableTime,whenEvent);
             }
         }
         return availableTime;
     }
 
-    public void addFirstOpenTimes(long meetingDuration, Collection<TimeRange> availableTime, TimeRange whenEvent)
+    private void addFirstOpenTimes(long meetingDuration, Collection<TimeRange> availableTime, TimeRange whenEvent)
     {
         TimeRange frontTime1= TimeRange.fromStartEnd(TimeRange.START_OF_DAY,whenEvent.start(),false);
         TimeRange backTime1 = TimeRange.fromStartEnd(whenEvent.end(),TimeRange.END_OF_DAY,true);
         addFrontAndBackTimesToList(meetingDuration, frontTime1, backTime1, availableTime);
     }
     
-    public void checkOverlapsInPotentialTimesWithEventTimes(Collection<TimeRange> availableTime,TimeRange whenEvent,
+    /** Checks if available times overlap event times to make available times around the event */
+    private void checkOverlapsInPotentialTimesWithEventTimes(Collection<TimeRange> availableTime,TimeRange whenEvent,
         long meetingDuration)
     {
         Collection<TimeRange> removeList = new ArrayList<TimeRange>();
         Collection<TimeRange> addList = new ArrayList<TimeRange>();
         for (TimeRange openTime : availableTime)
         {
-            //check if times overlap to produce the right time slots around the current event
             if(openTime.overlaps(whenEvent))
             {
                 if(openTime.contains(whenEvent))
@@ -111,26 +107,24 @@ public final class FindMeetingQuery
         availableTime.addAll(addList);    
     }
 
-    public Collection<TimeRange> checkIfOptionalAttendeesCanAttend(Collection<TimeRange> availableTime,TimeRange whenEvent)
+    private Collection<TimeRange> checkIfOptionalAttendeesCanAttend(Collection<TimeRange> availableTime,TimeRange whenEvent)
     {
         Collection<TimeRange> timeWithOptional = new ArrayList<TimeRange>(); 
-        int count = 0;
         for(TimeRange currentOpenTime: availableTime)
         {
             if(!currentOpenTime.overlaps(whenEvent))
             {
-                count++;
                 timeWithOptional.add(currentOpenTime);
             }
         }
-        if (count !=0)
+        if (timeWithOptional.isEmpty())
         {
-            return timeWithOptional;
+            return availableTime;
         }
-        return availableTime;
+        return timeWithOptional;
     }
     /** Add open slot for potential meeting times before and after the event*/
-    public void addFrontAndBackTimesToList(long meetingDuration, TimeRange frontTime,TimeRange backTime, Collection<TimeRange> timeRangeList)
+    private static void addFrontAndBackTimesToList(long meetingDuration, TimeRange frontTime,TimeRange backTime, Collection<TimeRange> timeRangeList)
     {
         if (frontTime.duration() >= meetingDuration)
         {
@@ -138,13 +132,12 @@ public final class FindMeetingQuery
         }
         if (backTime.duration() >= meetingDuration)
         {
-            timeRangeList.add(backTime);
-            
+            timeRangeList.add(backTime);     
         }
     }
 
-    /** Check if event attendees are on the meeting or optional attendees list*/
-    public boolean checkAttendees(Set<String> eventAttendees, Collection<String> checkAttendees)
+    /** Check if at least one event attendee is on the meeting or optional attendees list*/
+    private boolean checkAttendees(Set<String> eventAttendees, Collection<String> checkAttendees)
     {
         for(String name: eventAttendees)
         {
