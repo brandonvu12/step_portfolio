@@ -43,7 +43,7 @@ public final class FindMeetingQuery
             TimeRange whenEvent = event.getWhen();
             Set<String> eventAttendees = event.getAttendees();
             //Check if event attendees are invited to meeting OR there are no mandotory attendees/only optionals
-            if (checkAttendees(eventAttendees,request.getAttendees())||
+            if (checkAnyAttendeeInvited(eventAttendees,request.getAttendees())||
                 (request.getAttendees().isEmpty() && !request.getOptionalAttendees().isEmpty()))
             {
                 if (availableTime.isEmpty())
@@ -52,7 +52,7 @@ public final class FindMeetingQuery
                 }
                 else
                 {
-                    checkOverlapsInPotentialTimesWithEventTimes(availableTime, whenEvent, meetingDuration);   
+                    makeTimeAroundOverlapsInPotentialTimesWithEventTimes(availableTime, whenEvent, meetingDuration);   
                 }
             }  
             else if (request.getOptionalAttendees().isEmpty())
@@ -60,15 +60,15 @@ public final class FindMeetingQuery
                 return Arrays.asList(TimeRange.WHOLE_DAY);
             } 
             //Checks if optional attendees can attend open times, but will not affect times made for mandatory attendees
-            if (checkAttendees(eventAttendees, request.getOptionalAttendees()) && !request.getAttendees().isEmpty())
+            if (checkAnyAttendeeInvited(eventAttendees, request.getOptionalAttendees()) && !request.getAttendees().isEmpty())
             {
-                return checkIfOptionalAttendeesCanAttend(availableTime,whenEvent);
+                return timesForOptionalAttendees(availableTime,whenEvent);
             }
         }
         return availableTime;
     }
 
-    private void addFirstOpenTimes(long meetingDuration, Collection<TimeRange> availableTime, TimeRange whenEvent)
+    private static void addFirstOpenTimes(long meetingDuration, Collection<TimeRange> availableTime, TimeRange whenEvent)
     {
         TimeRange frontTime1= TimeRange.fromStartEnd(TimeRange.START_OF_DAY,whenEvent.start(),false);
         TimeRange backTime1 = TimeRange.fromStartEnd(whenEvent.end(),TimeRange.END_OF_DAY,true);
@@ -76,7 +76,7 @@ public final class FindMeetingQuery
     }
     
     /** Checks if available times overlap event times to make available times around the event */
-    private void checkOverlapsInPotentialTimesWithEventTimes(Collection<TimeRange> availableTime,TimeRange whenEvent,
+    private static void makeTimeAroundOverlapsInPotentialTimesWithEventTimes(Collection<TimeRange> availableTime,TimeRange whenEvent,
         long meetingDuration)
     {
         Collection<TimeRange> removeList = new ArrayList<TimeRange>();
@@ -107,7 +107,7 @@ public final class FindMeetingQuery
         availableTime.addAll(addList);    
     }
 
-    private Collection<TimeRange> checkIfOptionalAttendeesCanAttend(Collection<TimeRange> availableTime,TimeRange whenEvent)
+    private static Collection<TimeRange> timesForOptionalAttendees(Collection<TimeRange> availableTime,TimeRange whenEvent)
     {
         Collection<TimeRange> timeWithOptional = new ArrayList<TimeRange>(); 
         for(TimeRange currentOpenTime: availableTime)
@@ -117,11 +117,7 @@ public final class FindMeetingQuery
                 timeWithOptional.add(currentOpenTime);
             }
         }
-        if (timeWithOptional.isEmpty())
-        {
-            return availableTime;
-        }
-        return timeWithOptional;
+        return timeWithOptional.isEmpty() ? availableTime : timeWithOptional;
     }
     /** Add open slot for potential meeting times before and after the event*/
     private static void addFrontAndBackTimesToList(long meetingDuration, TimeRange frontTime,TimeRange backTime, Collection<TimeRange> timeRangeList)
@@ -137,11 +133,11 @@ public final class FindMeetingQuery
     }
 
     /** Check if at least one event attendee is on the meeting or optional attendees list*/
-    private boolean checkAttendees(Set<String> eventAttendees, Collection<String> checkAttendees)
+    private static boolean checkAnyAttendeeInvited(Set<String> eventAttendees, Collection<String> invitedAttendees)
     {
         for(String name: eventAttendees)
         {
-            if (checkAttendees.contains(name))
+            if (invitedAttendees.contains(name))
             {
                 return true;
             }
