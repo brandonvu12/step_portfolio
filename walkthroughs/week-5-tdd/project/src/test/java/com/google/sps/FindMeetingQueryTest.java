@@ -274,7 +274,7 @@ public final class FindMeetingQueryTest {
 
 
     @Test
-  public void everyAttendeeIsConsideredWithAllDayC() {
+  public void everyAttendeeIsConsideredWithOptionalPersonAllDayEvent_OptionalPersonCannotAttend() {
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_A)),
@@ -298,7 +298,7 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
-  public void everyAttendeeIsConsideredWithEventC() {
+  public void everyAttendeeIsConsideredWithOptionalPersonSmallEvent_OptionalPersonCanAttend() {
     Collection<Event> events = Arrays.asList(
         new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
             Arrays.asList(PERSON_A)),
@@ -321,7 +321,7 @@ public final class FindMeetingQueryTest {
   }
 
     @Test
-    public void BPersonEventIsSmallerThanMeetingTime() {
+    public void optionalAttendeeEventIsSmallerThanMeetingTime_OptionalPersonDoesNotAffectTime() {
         Collection<Event> events = Arrays.asList(
             new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
                 Arrays.asList(PERSON_A)),
@@ -341,7 +341,7 @@ public final class FindMeetingQueryTest {
     }
 
     @Test
-    public void NoAttendeesButOptionalWithGaps() {
+    public void onlyOptionalAttendeesWithGaps_AllAttend() {
         Collection<Event> events = Arrays.asList(
             new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
                 Arrays.asList(PERSON_A)),
@@ -360,7 +360,7 @@ public final class FindMeetingQueryTest {
         Assert.assertEquals(expected, actual);
     }
     @Test
-    public void NoAttendeesButOptionalWithNoGaps() {
+    public void OnlyOptionalAttendeesWithNoGaps_NoneAttend() {
         Collection<Event> events = Arrays.asList(
             new Event("Event 1", TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TimeRange.END_OF_DAY, false),
                 Arrays.asList(PERSON_A)),
